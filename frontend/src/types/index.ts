@@ -138,23 +138,27 @@ export type GameErrorType = typeof GameErrorType[keyof typeof GameErrorType];
 export interface GameError {
   error_type: GameErrorType;
   message: string;
-  details?: any;
+  details?: Record<string, unknown>;
 }
 
 // Type guards for runtime checking
-export const isCard = (obj: any): obj is Card => {
-  return obj && typeof obj.id === 'string' && typeof obj.name === 'string' &&
-         Object.values(CardType).includes(obj.card_type) &&
-         Object.values(Rarity).includes(obj.rarity);
+export const isCard = (obj: unknown): obj is Card => {
+  return obj !== null && typeof obj === 'object' && obj !== undefined && 
+         'id' in obj && typeof obj.id === 'string' && 
+         'name' in obj && typeof obj.name === 'string' &&
+         'card_type' in obj && Object.values(CardType).includes(obj.card_type as CardType) &&
+         'rarity' in obj && Object.values(Rarity).includes(obj.rarity as Rarity);
 };
 
-export const isGameState = (obj: any): obj is GameState => {
-  return obj && typeof obj.id === 'string' &&
-         obj.player && obj.current_round && obj.deck && 
-         Array.isArray(obj.hand) && obj.score && obj.shop;
+export const isGameState = (obj: unknown): obj is GameState => {
+  return obj !== null && typeof obj === 'object' && obj !== undefined &&
+         'id' in obj && typeof obj.id === 'string' &&
+         'player' in obj && 'current_round' in obj && 'deck' in obj && 
+         'hand' in obj && Array.isArray(obj.hand) && 'score' in obj && 'shop' in obj;
 };
 
-export const isGameError = (obj: any): obj is GameError => {
-  return obj && Object.values(GameErrorType).includes(obj.error_type) &&
-         typeof obj.message === 'string';
+export const isGameError = (obj: unknown): obj is GameError => {
+  return obj !== null && typeof obj === 'object' && obj !== undefined &&
+         'error_type' in obj && Object.values(GameErrorType).includes(obj.error_type as GameErrorType) &&
+         'message' in obj && typeof obj.message === 'string';
 };

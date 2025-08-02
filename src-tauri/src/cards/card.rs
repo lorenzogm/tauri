@@ -3,12 +3,7 @@ use crate::types::*;
 /// Card utilities and operations
 impl Card {
     /// Create a new card with basic properties
-    pub fn new(
-        id: CardId,
-        name: String,
-        card_type: CardType,
-        rarity: Rarity,
-    ) -> Self {
+    pub fn new(id: CardId, name: String, card_type: CardType, rarity: Rarity) -> Self {
         Self {
             id,
             name,
@@ -57,7 +52,7 @@ impl Card {
     /// Calculate effective points considering effects and synergies
     pub fn calculate_points(&self, context: &GameState) -> u32 {
         let mut points = self.base_points.unwrap_or(0);
-        
+
         // Apply effects that modify points
         for effect in &self.effects {
             match effect.effect_type {
@@ -82,7 +77,7 @@ impl Card {
                 _ => {} // Other effects don't modify points directly
             }
         }
-        
+
         points
     }
 

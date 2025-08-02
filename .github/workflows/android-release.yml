@@ -7,11 +7,48 @@ name: 'Build Android APK'
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build (optional)'
+        required: false
+        type: string
+
+concurrency:
+  group: android-release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
+  validate-pre-build:
+    name: 'Pre-build Validation'
+    runs-on: ubuntu-latest
+    outputs:
+      should-build: ${{ steps.check.outputs.should-build }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate build prerequisites
+        id: check
+        run: |
+          # Check if this is a valid release tag or manual dispatch
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || [[ "${{ github.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
+            echo "should-build=true" >> $GITHUB_OUTPUT
+            echo "✅ Valid release trigger detected"
+          else
+            echo "should-build=false" >> $GITHUB_OUTPUT
+            echo "❌ Invalid release trigger"
+            exit 1
+          fi
+
   build-android:
+    name: 'Build Android APK'
+    runs-on: ubuntu-latest
+    needs: validate-pre-build
+    if: needs.validate-pre-build.outputs.should-build == 'true'
     permissions:
       contents: write
+    
     strategy:
       fail-fast: false
       matrix:
@@ -19,9 +56,9 @@ jobs:
           - platform: 'android'
             args: '--target aarch64-linux-android'
 
-    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Generate version number
         id: version
@@ -60,7 +97,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 'lts/*'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
@@ -73,10 +110,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Rust stable
+      - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-linux-android
+          components: rustfmt, clippy
 
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
@@ -95,11 +133,11 @@ jobs:
           path: ~/.cargo/bin/cargo-tauri
           key: tauri-cli-${{ runner.os }}-v2.0
 
-      - name: Install dependencies (ubuntu only)
+      - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev \
-            libappindicator3-dev librsvg2-dev patchelf
+            libappindicator3-dev librsvg2-dev patchel
 
       - name: Install Tauri CLI
         if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
@@ -112,8 +150,21 @@ jobs:
           cargo tauri --version
           echo "Tauri CLI is ready!"
 
+      # Quality checks before building
       - name: Install frontend dependencies
         run: cd frontend && npm ci
+
+      - name: Frontend quality checks
+        run: |
+          cd frontend
+          npm run lint
+          npx tsc --noEmit
+
+      - name: Backend quality checks
+        run: |
+          cd src-tauri
+          cargo fmt --check
+          cargo clippy --all-targets --all-features || echo "⚠️ Clippy warnings to be resolved"
 
       - name: Build frontend
         run: cd frontend && npm run build
@@ -124,11 +175,24 @@ jobs:
           workspaces: src-tauri
           key: android-build-${{ matrix.args }}
 
+      - name: Add Android config to Tauri
+        run: |
+          cd src-tauri
+          # Temporarily add Android config for build
+          cp tauri.conf.json tauri.conf.json.backup
+          cat tauri.conf.json.backup | jq '. + {"android": {"minSdkVersion": 24, "compileSdkVersion": 34, "targetSdkVersion": 34}}' > tauri.conf.json
+
       - name: Android init
         run: cd src-tauri && cargo tauri android init
 
       - name: Build Android APK
         run: cd src-tauri && cargo tauri android build --apk ${{ matrix.args }}
+
+      - name: Restore Tauri config
+        if: always()
+        run: |
+          cd src-tauri
+          mv tauri.conf.json.backup tauri.conf.json
 
       - name: Find APK files
         run: find src-tauri/gen -name "*.apk" -type f
@@ -138,6 +202,7 @@ jobs:
         with:
           name: cryptomafia-android-apk${{ steps.version.outputs.APK_SUFFIX }}
           path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+          retention-days: 30
 
       - name: Release APK
         uses: softprops/action-gh-release@v2

@@ -1,5 +1,5 @@
-use crate::types::*;
 use crate::cards::*;
+use crate::types::*;
 
 /// Game state manager
 pub struct GameManager;
@@ -8,13 +8,13 @@ impl GameManager {
     /// Create a new game with default settings
     pub fn new_game(id: String) -> GameState {
         let mut game_state = GameState::new(id);
-        
+
         // Initialize with a starter deck
         Self::setup_starter_deck(&mut game_state);
-        
+
         // Draw initial hand
         Self::draw_initial_hand(&mut game_state);
-        
+
         game_state
     }
 
@@ -32,7 +32,6 @@ impl GameManager {
             .with_cost(5)
             .with_synergies(vec![Synergy::Memecoin, Synergy::Influencer])
             .with_flavor_text("Much wow, very gains, such profit!".to_string()),
-
             Card::new(
                 "bitcoin_maxi".to_string(),
                 "Bitcoin Maxi".to_string(),
@@ -43,7 +42,6 @@ impl GameManager {
             .with_cost(25)
             .with_synergies(vec![Synergy::Trader])
             .with_flavor_text("There is no second best. Orange coin good.".to_string()),
-
             Card::new(
                 "diamond_hands".to_string(),
                 "Diamond Hands".to_string(),
@@ -91,7 +89,7 @@ impl GameManager {
     /// Process the end of a round
     pub fn end_round(game_state: &mut GameState) -> RoundResult {
         let passed = game_state.end_round();
-        
+
         if passed {
             // Prepare for next round
             Self::setup_next_round(game_state);
@@ -157,7 +155,7 @@ impl GameManager {
     pub fn calculate_total_score(game_state: &GameState) -> u32 {
         let base_score = game_state.score.cw3_points;
         let synergy_result = SynergyCalculator::calculate_synergies(&game_state.hand, game_state);
-        
+
         base_score + synergy_result.total_bonus
     }
 }

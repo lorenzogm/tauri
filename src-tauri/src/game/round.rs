@@ -83,7 +83,8 @@ impl RoundState {
                 BossMechanic::RugPullAlert => {
                     // Lose some currency
                     let penalty = game_state.score.crymp_currency / 4;
-                    game_state.score.crymp_currency = game_state.score.crymp_currency.saturating_sub(penalty);
+                    game_state.score.crymp_currency =
+                        game_state.score.crymp_currency.saturating_sub(penalty);
                 }
                 BossMechanic::WhaleManipulation => {
                     // Score target increases
@@ -115,10 +116,10 @@ impl RoundState {
 /// Boss mechanics that can affect gameplay
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum BossMechanic {
-    RegulatorAudit,      // Reduce scammer effectiveness
-    MarketCrash,         // Reduce all point values
-    FUDSpread,           // Disable random cards
-    RugPullAlert,        // Lose currency
-    WhaleManipulation,   // Increase score target
-    FinalBoss,           // Multiple severe effects
+    RegulatorAudit,    // Reduce scammer effectiveness
+    MarketCrash,       // Reduce all point values
+    FUDSpread,         // Disable random cards
+    RugPullAlert,      // Lose currency
+    WhaleManipulation, // Increase score target
+    FinalBoss,         // Multiple severe effects
 }

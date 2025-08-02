@@ -17,23 +17,23 @@ pub enum Rarity {
 /// Card types representing different gameplay mechanics
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CardType {
-    Token,    // Generate $CW3 points
-    Joker,    // Passive modifiers
-    Tool,     // One-time effects
-    Trap,     // High-risk cards
-    Event,    // Game state modifiers
+    Token, // Generate $CW3 points
+    Joker, // Passive modifiers
+    Tool,  // One-time effects
+    Trap,  // High-risk cards
+    Event, // Game state modifiers
 }
 
 /// Synergy categories for card interactions
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Synergy {
-    Influencer,  // Social media manipulation
-    Trader,      // Market analysis
-    DAO,         // Decentralized governance
-    Memecoin,    // Viral tokens
-    DeFi,        // Decentralized finance
-    NFT,         // Non-fungible tokens
-    Scammer,     // Rug pulls and fraud
+    Influencer, // Social media manipulation
+    Trader,     // Market analysis
+    DAO,        // Decentralized governance
+    Memecoin,   // Viral tokens
+    DeFi,       // Decentralized finance
+    NFT,        // Non-fungible tokens
+    Scammer,    // Rug pulls and fraud
 }
 
 /// Card effects that modify gameplay

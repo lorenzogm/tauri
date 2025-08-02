@@ -5,7 +5,11 @@ pub struct EffectProcessor;
 
 impl EffectProcessor {
     /// Apply an effect to the game state
-    pub fn apply_effect(effect: &Effect, game_state: &mut GameState, card: &Card) -> GameResult<()> {
+    pub fn apply_effect(
+        effect: &Effect,
+        game_state: &mut GameState,
+        card: &Card,
+    ) -> GameResult<()> {
         match effect.effect_type {
             EffectType::AddPoints => {
                 if let Some(value) = effect.value {
