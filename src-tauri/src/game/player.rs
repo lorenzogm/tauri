@@ -6,9 +6,9 @@ impl PlayerState {
     pub fn award_experience(&mut self, base_xp: u32, bonus_xp: u32) {
         let total_xp = base_xp + bonus_xp;
         let old_level = self.level;
-        
+
         self.add_experience(total_xp);
-        
+
         if self.level > old_level {
             // Player leveled up - could trigger rewards
             self.on_level_up(old_level, self.level);
@@ -19,7 +19,7 @@ impl PlayerState {
     fn on_level_up(&mut self, old_level: u32, new_level: u32) {
         // Award new cards for leveling up
         let levels_gained = new_level - old_level;
-        
+
         for level in (old_level + 1)..=new_level {
             self.unlock_level_rewards(level);
         }
@@ -36,7 +36,8 @@ impl PlayerState {
             _ => {
                 // Every 5 levels, unlock a random rare card
                 if level % 5 == 0 {
-                    self.unlocked_cards.push(format!("rare_card_level_{}", level));
+                    self.unlocked_cards
+                        .push(format!("rare_card_level_{}", level));
                 }
             }
         }
@@ -45,7 +46,7 @@ impl PlayerState {
     /// Record game completion
     pub fn record_game(&mut self, won: bool, final_score: u32, rounds_survived: u32) {
         self.total_games += 1;
-        
+
         if won {
             self.wins += 1;
         }
@@ -58,7 +59,7 @@ impl PlayerState {
         let base_xp = rounds_survived * 10;
         let score_bonus = final_score / 100;
         let completion_bonus = if won { 100 } else { 25 };
-        
+
         self.award_experience(base_xp, score_bonus + completion_bonus);
     }
 
@@ -81,7 +82,7 @@ impl PlayerState {
         let current_level_xp = (self.level - 1) * 100;
         let xp_in_level = self.experience - current_level_xp;
         let xp_needed = 100;
-        
+
         (xp_in_level, xp_needed)
     }
 }

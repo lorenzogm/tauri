@@ -1,7 +1,9 @@
-import { createContext, useContext, useReducer, useCallback } from 'react';
+import { useReducer, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { GameState, CardId } from '../types';
 import { GameService, CardService, PersistenceService } from '../services';
+import { GameContext } from './context';
+import type { GameContextType } from './context';
 
 // Game context state
 interface GameContextState {
@@ -18,28 +20,6 @@ type GameAction =
   | { type: 'SET_GAME_STATE'; payload: GameState }
   | { type: 'SET_PLAYING'; payload: boolean }
   | { type: 'CLEAR_GAME' };
-
-// Game context interface
-interface GameContextType extends GameContextState {
-  // Game management
-  startNewGame: (gameId?: string) => Promise<void>;
-  loadGame: (saveId: string) => Promise<void>;
-  saveGame: () => Promise<void>;
-  clearGame: () => void;
-  
-  // Card actions
-  playCard: (cardId: CardId) => Promise<void>;
-  buyCard: (cardId: CardId) => Promise<void>;
-  discardCard: (cardId: CardId) => Promise<void>;
-  drawCards: (count: number) => Promise<void>;
-  refreshShop: () => Promise<void>;
-  
-  // Round management
-  endRound: () => Promise<boolean>;
-  
-  // Utilities
-  clearError: () => void;
-}
 
 // Initial state
 const initialState: GameContextState = {
@@ -66,9 +46,6 @@ function gameReducer(state: GameContextState, action: GameAction): GameContextSt
       return state;
   }
 }
-
-// Create the context
-const GameContext = createContext<GameContextType | undefined>(undefined);
 
 // Provider component
 interface GameProviderProps {
@@ -210,13 +187,4 @@ export function GameProvider({ children }: GameProviderProps) {
       {children}
     </GameContext.Provider>
   );
-}
-
-// Hook to use the game context
-export function useGame(): GameContextType {
-  const context = useContext(GameContext);
-  if (context === undefined) {
-    throw new Error('useGame must be used within a GameProvider');
-  }
-  return context;
 }

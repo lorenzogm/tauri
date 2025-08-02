@@ -87,7 +87,9 @@ impl SynergyCalculator {
         }
 
         // Check for conflicting synergies
-        if synergy_counts.contains_key(&Synergy::Trader) && synergy_counts.contains_key(&Synergy::Scammer) {
+        if synergy_counts.contains_key(&Synergy::Trader)
+            && synergy_counts.contains_key(&Synergy::Scammer)
+        {
             anti_synergies.push(AntiSynergy {
                 synergy1: Synergy::Trader,
                 synergy2: Synergy::Scammer,
@@ -96,7 +98,9 @@ impl SynergyCalculator {
             });
         }
 
-        if synergy_counts.contains_key(&Synergy::DeFi) && synergy_counts.contains_key(&Synergy::Scammer) {
+        if synergy_counts.contains_key(&Synergy::DeFi)
+            && synergy_counts.contains_key(&Synergy::Scammer)
+        {
             anti_synergies.push(AntiSynergy {
                 synergy1: Synergy::DeFi,
                 synergy2: Synergy::Scammer,
