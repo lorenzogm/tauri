@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useGame } from '../context/GameContext';
+import { useState, useEffect, useCallback } from 'react';
+import { useGame } from './useGame';
 import { GameService } from '../services';
 import type { GameStats } from '../services';
 
@@ -12,7 +12,7 @@ export function useGameStats() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const refreshStats = async () => {
+  const refreshStats = useCallback(async () => {
     if (!gameState) return;
 
     setIsLoading(true);
@@ -25,7 +25,7 @@ export function useGameStats() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [gameState]);
 
   // Automatically refresh stats when game state changes
   useEffect(() => {
@@ -34,7 +34,7 @@ export function useGameStats() {
     } else {
       setStats(null);
     }
-  }, [gameState]);
+  }, [gameState, refreshStats]);
 
   return {
     stats,

@@ -14,10 +14,10 @@ pub struct Multiplier {
 /// Primary scoring system
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CryptoScore {
-    pub cw3_points: u32,      // Primary scoring currency
-    pub crymp_currency: u32,  // Shop currency
+    pub cw3_points: u32,     // Primary scoring currency
+    pub crymp_currency: u32, // Shop currency
     pub multipliers: Vec<Multiplier>,
-    pub round_target: u32,    // Target score to pass round
+    pub round_target: u32, // Target score to pass round
 }
 
 impl CryptoScore {
@@ -32,12 +32,12 @@ impl CryptoScore {
 
     pub fn add_points(&mut self, points: u32) {
         let mut final_points = points as f32;
-        
+
         // Apply multipliers
         for multiplier in &self.multipliers {
             final_points *= multiplier.value;
         }
-        
+
         self.cw3_points += final_points as u32;
     }
 
@@ -62,9 +62,9 @@ impl CryptoScore {
 /// Round types with different difficulties
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RoundType {
-    SmallBlind,  // Easy round
-    BigBlind,    // Medium round
-    Boss,        // Hard round with special mechanics
+    SmallBlind, // Easy round
+    BigBlind,   // Medium round
+    Boss,       // Hard round with special mechanics
 }
 
 /// Current round state
@@ -185,7 +185,7 @@ impl GameState {
         // Find and remove card from hand
         if let Some(pos) = self.hand.iter().position(|c| c.id == *card_id) {
             let card = self.hand.remove(pos);
-            
+
             // Apply card effects based on type
             match card.card_type {
                 super::card_types::CardType::Token => {
@@ -197,7 +197,7 @@ impl GameState {
                     // Other card types will be implemented later
                 }
             }
-            
+
             self.current_round.cards_played.push(card_id.clone());
             Ok(())
         } else {
@@ -207,21 +207,21 @@ impl GameState {
 
     pub fn end_round(&mut self) -> bool {
         let passed = self.score.is_round_passed();
-        
+
         if passed {
             // Advance to next round
             self.current_round.round_number += 1;
             self.score.round_target += 50; // Increase difficulty
             self.score.cw3_points = 0; // Reset score for new round
             self.current_round.cards_played.clear();
-            
+
             // Add currency reward
             self.score.add_currency(50);
         } else {
             // Game over
             self.game_over = true;
         }
-        
+
         passed
     }
 }

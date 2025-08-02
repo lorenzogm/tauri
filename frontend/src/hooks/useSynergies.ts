@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useGame } from '../context/GameContext';
+import { useState, useEffect, useCallback } from 'react';
+import { useGame } from './useGame';
 import { CardService } from '../services';
 import type { SynergyResult } from '../services';
 
@@ -11,7 +11,7 @@ export function useSynergies() {
   const [synergies, setSynergies] = useState<SynergyResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  const calculateSynergies = async () => {
+  const calculateSynergies = useCallback(async () => {
     if (!gameState) return;
 
     setIsCalculating(true);
@@ -23,14 +23,14 @@ export function useSynergies() {
     } finally {
       setIsCalculating(false);
     }
-  };
+  }, [gameState]);
 
   // Automatically recalculate when hand changes
   useEffect(() => {
     if (gameState?.hand) {
       calculateSynergies();
     }
-  }, [gameState?.hand]);
+  }, [gameState?.hand, calculateSynergies]);
 
   return {
     synergies,
