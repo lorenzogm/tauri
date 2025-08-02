@@ -6,6 +6,11 @@ on:
   push:
     branches: [ main ]
 
+# Add permissions for private repo access
+permissions:
+  contents: read
+  pull-requests: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -24,11 +29,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for better change detection
 
       - name: Detect changes
         uses: dorny/paths-filter@v3
         id: changes
         with:
+          # Use git diff for change detection to avoid API calls
+          list-files: none
           filters: |
             frontend:
               - 'frontend/**'
