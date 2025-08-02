@@ -10,13 +10,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Cache system dependencies
+    - name: Check cache for system dependencies
       id: cache-system-deps
       uses: actions/cache@v4
       with:
-        path: |
-          /var/cache/apt
-          /var/lib/apt/lists
+        path: ~/.cache/system-deps-marker
         key: ${{ inputs.cache-key }}-${{ runner.os }}-${{ hashFiles('/etc/apt/sources.list*') }}
         restore-keys: |
           ${{ inputs.cache-key }}-${{ runner.os }}-
@@ -32,3 +30,6 @@ runs:
           librsvg2-dev \
           patchelf \
           libgtk-3-dev
+        # Create cache marker
+        mkdir -p ~/.cache
+        touch ~/.cache/system-deps-marker
