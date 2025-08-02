@@ -16,7 +16,6 @@ The CI/CD pipeline consists of three main workflows:
 
 **Triggers:**
 - Pull requests targeting `main` branch
-- Pushes to `main` branch
 
 **Jobs:**
 
