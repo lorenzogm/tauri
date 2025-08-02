@@ -70,7 +70,22 @@ This project is currently in the planning phase. The implementation is broken do
 - ✅ Tailwind CSS configuration
 - ✅ Project structure established
 - ✅ Comprehensive planning documentation
+- ✅ Android CI/CD pipeline for APK generation
 - 🚧 Ready for feature implementation
+
+## 📱 Android Builds
+
+The project includes an automated CI/CD pipeline that generates Android APK files:
+
+### Automatic Builds
+- **Tag releases**: Push a version tag (e.g., `v1.0.0`) to trigger an automatic APK build and GitHub release
+- **Manual builds**: Use GitHub Actions "workflow_dispatch" to manually trigger a build
+
+### Build Output
+- APK files are uploaded as GitHub Actions artifacts
+- For tagged releases, APK files are automatically attached to the GitHub release
+- Supports ARM64 (aarch64) Android devices
+- Minimum Android SDK: 24 (Android 7.0)
 
 ## 🎨 Game Design
 
