@@ -15,7 +15,7 @@
 ### Architecture
 - **Framework**: Tauri (Desktop app with web frontend)
 - **Backend**: Rust (game logic, state management, persistence)
-- **Frontend**: React or Svelte (UI, card interactions, animations)
+- **Frontend**: React (UI, card interactions, animations)
 - **Persistence**: JSON or SQLite for progression, decks, unlocks
 - **Platform**: Desktop (PC, Mac, Linux), potential Web deployment
 
@@ -155,7 +155,7 @@ interface GameState {
 ```
 
 #### Styling Guidelines
-- Use CSS modules or styled-components
+- Use Tailwind CSS for styling
 - Implement dark theme with crypto-inspired color palette
 - Gold/yellow for currency, red for dangerous cards, green for beneficial effects
 - Neon accents for Web3/cyber aesthetic
