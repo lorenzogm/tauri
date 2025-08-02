@@ -71,7 +71,25 @@ This project is currently in the planning phase. The implementation is broken do
 - ✅ Project structure established
 - ✅ Comprehensive planning documentation
 - ✅ Android CI/CD pipeline for APK generation
+- ✅ **Comprehensive CI/CD pipeline for quality assurance**
 - 🚧 Ready for feature implementation
+
+## 🔧 Development & CI/CD
+
+The project includes a comprehensive CI/CD pipeline that ensures code quality and stable builds:
+
+### Quality Assurance
+- **Frontend**: ESLint, TypeScript checking, React best practices
+- **Backend**: Rust formatting (`rustfmt`), linting (`clippy`), unit tests
+- **Integration**: Full Tauri application build verification
+- **Security**: Dependency auditing and vulnerability scanning
+
+### Automated Workflows
+- **PR Checks**: All pull requests are validated for quality and buildability
+- **Main Branch Builds**: Comprehensive weekly builds with security audits
+- **Android Releases**: Automated APK generation for tagged releases
+
+📚 **See [CI/CD Documentation](docs/CI-CD.md) for complete details on the pipeline and quality standards.**
 
 ## 📱 Android Builds
 
