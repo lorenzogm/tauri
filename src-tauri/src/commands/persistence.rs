@@ -1,6 +1,7 @@
 use crate::types::*;
 use std::fs;
 use std::path::PathBuf;
+use tauri::Manager;
 
 /// Save game data to persistent storage
 #[tauri::command]

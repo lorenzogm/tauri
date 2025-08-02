@@ -1,5 +1,6 @@
 use crate::cards::*;
 use crate::types::*;
+use crate::game::GameManager;
 
 /// Play a card from the player's hand
 #[tauri::command]

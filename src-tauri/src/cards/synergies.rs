@@ -25,9 +25,11 @@ impl SynergyCalculator {
             }
         }
 
+        let total_bonus = bonuses.values().sum();
+
         SynergyResult {
             active_synergies: bonuses,
-            total_bonus: bonuses.values().sum(),
+            total_bonus,
         }
     }
 
@@ -114,7 +116,7 @@ impl SynergyCalculator {
 }
 
 /// Result of synergy calculations
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct SynergyResult {
     pub active_synergies: HashMap<Synergy, u32>,
     pub total_bonus: u32,

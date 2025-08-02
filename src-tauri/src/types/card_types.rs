@@ -5,7 +5,7 @@ use std::collections::HashSet;
 pub type CardId = String;
 
 /// Card rarity levels
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Rarity {
     Common,
     Uncommon,
@@ -15,7 +15,7 @@ pub enum Rarity {
 }
 
 /// Card types representing different gameplay mechanics
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum CardType {
     Token, // Generate $CW3 points
     Joker, // Passive modifiers
@@ -75,7 +75,7 @@ pub struct Card {
 }
 
 /// Player's deck of cards
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Deck {
     pub cards: Vec<Card>,
     pub max_size: usize,

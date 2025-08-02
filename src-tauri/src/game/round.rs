@@ -51,7 +51,7 @@ impl RoundState {
                     BossMechanic::FUDSpread,
                     BossMechanic::WhaleManipulation,
                 ];
-                vec![mechanics[((self.round_number / 3) % mechanics.len()) as usize].clone()]
+                vec![mechanics[((self.round_number / 3) as usize % mechanics.len())].clone()]
             }
         }
     }

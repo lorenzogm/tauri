@@ -31,5 +31,11 @@ impl fmt::Display for GameError {
 
 impl std::error::Error for GameError {}
 
+impl From<String> for GameError {
+    fn from(msg: String) -> Self {
+        GameError::InvalidGameState(msg)
+    }
+}
+
 /// Result type for game operations
 pub type GameResult<T> = Result<T, GameError>;
