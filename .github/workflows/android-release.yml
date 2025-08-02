@@ -54,7 +54,7 @@ jobs:
       matrix:
         include:
           - platform: 'android'
-            args: '--target aarch64-linux-android'
+            args: '--target aarch64'
 
     steps:
       - name: Checkout code
@@ -109,6 +109,14 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 11076708
+          ndk-version: 26.1.10909125
+          
+      - name: Set NDK_HOME environment variable
+        run: |
+          echo "NDK_HOME=$ANDROID_SDK_ROOT/ndk/26.1.10909125" >> $GITHUB_ENV
+          echo "NDK_HOME set to: $ANDROID_SDK_ROOT/ndk/26.1.10909125"
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
