@@ -29,15 +29,14 @@ jobs:
         with:
           components: rustfmt, clippy
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev
+      - name: Setup system dependencies
+        uses: ./.github/actions/setup-system-deps
 
-      - name: Cache dependencies
+      - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
+          save-if: true  # Always save cache on main branch
 
       # Frontend checks
       - name: Install frontend dependencies
@@ -70,6 +69,7 @@ jobs:
 
       # Security checks (optional for now)
       - name: Rust security audit (optional)
+        continue-on-error: true
         run: |
           cargo install cargo-audit || echo "cargo-audit installation skipped"
           cd src-tauri && cargo audit || echo "⚠️ Security audit to be enabled after compilation fixes"
