@@ -1,7 +1,9 @@
 name: 'Build Android APK'
 
-on:
+"on":
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   workflow_dispatch:
@@ -20,6 +22,40 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+
+      - name: Generate version number
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            # For tag builds, use the tag name as version
+            VERSION=${GITHUB_REF#refs/tags/v}
+            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+            echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
+            echo "APK_SUFFIX=" >> $GITHUB_OUTPUT
+          else
+            # For main branch builds, generate dev version
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            BUILD_NUMBER=${{ github.run_number }}
+            VERSION="0.1.0-dev.${SHORT_SHA}.${BUILD_NUMBER}"
+            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+            echo "IS_RELEASE=false" >> $GITHUB_OUTPUT
+            echo "APK_SUFFIX=-dev-${SHORT_SHA}-${BUILD_NUMBER}" >> $GITHUB_OUTPUT
+          fi
+          echo "Generated version: $VERSION"
+
+      - name: Update Tauri config version
+        run: |
+          # Update version in tauri.conf.json
+          sed -i '/"version":/s/"version": ".*"/"version": "${{ steps.version.outputs.VERSION }}"/' \
+            src-tauri/tauri.conf.json
+          echo "Updated tauri.conf.json version to ${{ steps.version.outputs.VERSION }}"
+          
+      - name: Update Cargo.toml version
+        run: |
+          # Update version in Cargo.toml (only the package version, line 3)
+          sed -i '3s/version = ".*"/version = "${{ steps.version.outputs.VERSION }}"/' \
+            src-tauri/Cargo.toml
+          echo "Updated Cargo.toml version to ${{ steps.version.outputs.VERSION }}"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -62,7 +98,8 @@ jobs:
       - name: Install dependencies (ubuntu only)
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev \
+            libappindicator3-dev librsvg2-dev patchelf
 
       - name: Install Tauri CLI
         if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
@@ -99,11 +136,12 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cryptomafia-android-apk
+          name: cryptomafia-android-apk${{ steps.version.outputs.APK_SUFFIX }}
           path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
 
       - name: Release APK
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+        if: steps.version.outputs.IS_RELEASE == 'true'
         with:
           files: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+          tag_name: v${{ steps.version.outputs.VERSION }}
