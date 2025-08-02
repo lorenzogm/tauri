@@ -1,3 +1,13 @@
+// Core modules
+pub mod types;
+pub mod cards;
+pub mod game;
+
+// Re-export commonly used types
+pub use types::*;
+pub use cards::*;
+pub use game::*;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
