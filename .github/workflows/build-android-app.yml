@@ -210,7 +210,11 @@ jobs:
       matrix:
         include:
           - platform: 'android'
-            args: '--target aarch64'
+            target: 'aarch64'
+            arch_name: 'arm64-v8a'
+          - platform: 'android'
+            target: 'armv7'
+            arch_name: 'armeabi-v7a'
 
     steps:
       - name: Checkout code
@@ -279,7 +283,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-linux-android
+          targets: aarch64-linux-android,armv7-linux-androideabi
           components: rustfmt, clippy
 
       - name: Cache Rust dependencies
@@ -322,13 +326,16 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-          key: android-build-${{ matrix.args }}
+          key: android-build-${{ matrix.target }}
 
       - name: Android init
         run: cd src-tauri && cargo tauri android init
 
-      - name: Build Android APK
-        run: cd src-tauri && cargo tauri android build --apk ${{ matrix.args }}
+      - name: Build Android Debug APK
+        run: cd src-tauri && cargo tauri android build --apk --target ${{ matrix.target }}
+
+      - name: Build Android Release APK
+        run: cd src-tauri && cargo tauri android build --apk --target ${{ matrix.target }} --release
 
       - name: Find APK files
         run: find src-tauri/gen -name "*.apk" -type f
@@ -336,7 +343,7 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cryptomafia-android-apk${{ steps.version.outputs.APK_SUFFIX }}
+          name: cryptomafia-android-${{ matrix.arch_name }}${{ steps.version.outputs.APK_SUFFIX }}
           path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
           retention-days: 30
 
@@ -349,20 +356,42 @@ jobs:
           body: |
             # CryptoMafia Android Release ${{ steps.version.outputs.VERSION }}
             
-            ## 📱 Android APK
-            Download the APK file below to install CryptoMafia on your Android device.
+            ## 📱 Android APK Downloads
+            
+            **Choose the correct APK for your device:**
+            - **arm64-v8a**: For modern 64-bit ARM devices (most new phones)
+            - **armeabi-v7a**: For older 32-bit ARM devices
+            
+            ### Installation Instructions
+            1. Download the appropriate APK for your device architecture
+            2. Enable "Install from Unknown Sources" in your Android settings:
+               - Settings → Security → Unknown Sources (Android 7-) 
+               - Settings → Apps → Special Access → Install Unknown Apps (Android 8+)
+            3. Open the downloaded APK file to install
+            
+            ### APK Types
+            - **Debug APK**: For testing, requires "Unknown Sources" enabled
+            - **Release APK**: Optimized build (when available)
             
             ## 🚀 Features
             - Satirical roguelike deckbuilder with crypto theme
             - Strategic card combinations and synergies
             - Navigate the Web3 ecosystem as a crypto-mafia boss
             
-            ## 📋 Requirements
-            - Android 7.0 (API level 24) or higher
-            - Allow installation from unknown sources in your device settings
+            ## 📋 System Requirements
+            - **Android 7.0 (API level 24) or higher**
+            - **ARM-based device** (most Android phones and tablets)
+            - **Storage**: At least 50MB free space
+            - **Permissions**: Internet access, file storage access
+            
+            ## 🔧 Troubleshooting
+            - **"App not installed"**: Enable "Install from Unknown Sources"
+            - **"Parse error"**: Download the correct architecture APK for your device
+            - **App crashes**: Ensure your Android version meets minimum requirements
             
             ## 🏗️ Build Info
             - Built from: ${{ github.event_name == 'workflow_dispatch' && 'existing tag' || 'main branch' }}
+            - Architectures: arm64-v8a, armeabi-v7a  
             - Commit: ${{ github.sha }}
             - Build time: ${{ github.run_number }}
           draft: false
