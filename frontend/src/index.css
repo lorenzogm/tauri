@@ -1,3 +1,114 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-crypto-gold-50: #fffdf7;
+  --color-crypto-gold-100: #fffbeb;
+  --color-crypto-gold-200: #fef3c7;
+  --color-crypto-gold-300: #fde68a;
+  --color-crypto-gold-400: #facc15;
+  --color-crypto-gold-500: #f59e0b;
+  --color-crypto-gold-600: #d97706;
+  --color-crypto-gold-700: #b45309;
+  --color-crypto-gold-800: #92400e;
+  --color-crypto-gold-900: #78350f;
+  --color-crypto-gold-950: #451a03;
+  
+  --color-crypto-green-50: #f0fdf4;
+  --color-crypto-green-100: #dcfce7;
+  --color-crypto-green-200: #bbf7d0;
+  --color-crypto-green-300: #86efac;
+  --color-crypto-green-400: #4ade80;
+  --color-crypto-green-500: #22c55e;
+  --color-crypto-green-600: #16a34a;
+  --color-crypto-green-700: #15803d;
+  --color-crypto-green-800: #166534;
+  --color-crypto-green-900: #14532d;
+  --color-crypto-green-950: #052e16;
+  
+  --color-crypto-red-50: #fef2f2;
+  --color-crypto-red-100: #fee2e2;
+  --color-crypto-red-200: #fecaca;
+  --color-crypto-red-300: #fca5a5;
+  --color-crypto-red-400: #f87171;
+  --color-crypto-red-500: #ef4444;
+  --color-crypto-red-600: #dc2626;
+  --color-crypto-red-700: #b91c1c;
+  --color-crypto-red-800: #991b1b;
+  --color-crypto-red-900: #7f1d1d;
+  --color-crypto-red-950: #450a0a;
+  
+  --color-crypto-purple-50: #faf5ff;
+  --color-crypto-purple-100: #f3e8ff;
+  --color-crypto-purple-200: #e9d5ff;
+  --color-crypto-purple-300: #d8b4fe;
+  --color-crypto-purple-400: #c084fc;
+  --color-crypto-purple-500: #a855f7;
+  --color-crypto-purple-600: #9333ea;
+  --color-crypto-purple-700: #7c3aed;
+  --color-crypto-purple-800: #6b21a8;
+  --color-crypto-purple-900: #581c87;
+  --color-crypto-purple-950: #3b0764;
+  
+  --color-crypto-dark-50: #f9fafb;
+  --color-crypto-dark-100: #d1d5db;
+  --color-crypto-dark-200: #9ca3af;
+  --color-crypto-dark-300: #6b7280;
+  --color-crypto-dark-400: #4b5563;
+  --color-crypto-dark-500: #374151;
+  --color-crypto-dark-600: #1f2937;
+  --color-crypto-dark-700: #16213e;
+  --color-crypto-dark-800: #1a1a2e;
+  --color-crypto-dark-900: #0f0f23;
+  
+  --color-currency-cw3: #facc15;
+  --color-currency-crymp: #22c55e;
+  
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+  
+  --color-synergy-influencer: #ec4899;
+  --color-synergy-trader: #3b82f6;
+  --color-synergy-dao: #8b5cf6;
+  --color-synergy-memecoin: #f59e0b;
+  --color-synergy-defi: #10b981;
+  --color-synergy-nft: #f97316;
+  --color-synergy-scammer: #ef4444;
+}
+
+/* Custom utility classes for crypto theme */
+@layer utilities {
+  .bg-gradient-crypto {
+    background: linear-gradient(135deg, #facc15 0%, #22c55e 50%, #3b82f6 100%);
+  }
+  
+  .bg-gradient-dark {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  }
+  
+  .shadow-neon {
+    box-shadow: 0 0 5px currentColor;
+  }
+  
+  .shadow-neon-lg {
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+  
+  .shadow-neon-xl {
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes glow {
+    0% { 
+      box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+    }
+    100% { 
+      box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+  }
+}
