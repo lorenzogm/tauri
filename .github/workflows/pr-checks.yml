@@ -155,9 +155,12 @@ jobs:
         continue-on-error: true
 
   android-check:
-    name: 'Android Build Check'
+    name: 'Android APK Build'
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      actions: read
     
     steps:
       - name: Checkout code
@@ -178,24 +181,38 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 11076708
+          ndk-version: 26.3.11579264
+          
+      - name: Set NDK_HOME environment variable
+        run: |
+          echo "NDK_HOME=$ANDROID_SDK_ROOT/ndk/26.3.11579264" >> $GITHUB_ENV
+          echo "NDK_HOME set to: $ANDROID_SDK_ROOT/ndk/26.3.11579264"
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-linux-android
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev
+      - name: Setup system dependencies with caching
+        uses: ./.github/actions/setup-system-deps
 
-      - name: Cache dependencies
+      - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-          key: android-build
+          key: android-build-${{ github.sha }}
+
+      - name: Cache Tauri CLI binary
+        uses: actions/cache@v4
+        id: tauri-cli-cache
+        with:
+          path: ~/.cargo/bin/cargo-tauri
+          key: tauri-cli-${{ runner.os }}-v2.0
 
       - name: Install Tauri CLI
+        if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
         run: cargo install tauri-cli --version "^2.0" --locked
 
       - name: Install frontend dependencies
@@ -204,10 +221,23 @@ jobs:
       - name: Build frontend
         run: cd frontend && npm run build
 
-      - name: Android init (dry run)
+      - name: Android init
         run: cd src-tauri && cargo tauri android init
 
-      - name: Android build check (without APK generation)
+      - name: Build Android APK
+        run: cd src-tauri && cargo tauri android build --apk --target aarch64
+
+      - name: Find APK files
+        run: find src-tauri/gen -name "*.apk" -type f
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cryptomafia-android-apk-pr-${{ github.event.number }}
+          path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+          retention-days: 7
+
+      - name: Create build summary
         run: |
           cd src-tauri
           # Add Android config temporarily for validation
