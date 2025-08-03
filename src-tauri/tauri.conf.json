@@ -33,5 +33,19 @@
       "icons/icon.ico"
     ]
   },
+  "android": {
+    "allowBackup": true,
+    "backup": false,
+    "contentUrlScheme": "https",
+    "minSdkVersion": 24,
+    "compileSdkVersion": 34,
+    "targetSdkVersion": 34,
+    "releaseSigningConfig": {
+      "keyAlias": "release-key",
+      "keyPassword": "ENV:KEYSTORE_PASSWORD",
+      "storeFile": "/tmp/keystore/cryptomafia-release.keystore",
+      "storePassword": "ENV:KEYSTORE_PASSWORD"
+    }
+  },
   "plugins": {}
 }

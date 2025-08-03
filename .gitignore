@@ -17,3 +17,8 @@ Thumbs.db
 # Tauri Android generated files
 src-tauri/gen/
 src-tauri/android/
+
+# Android keystores and signing
+.android/
+*.keystore
+*.jks
