@@ -1,8 +1,6 @@
 name: 'Build iOS App'
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
     branches: [ main ]
   workflow_dispatch:
@@ -74,13 +72,6 @@ jobs:
               echo "❌ Tag '$TAG' does not exist"
               exit 1
             fi
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            # Pull request - validation build only
-            echo "should-build=true" >> $GITHUB_OUTPUT
-            echo "build-tag=" >> $GITHUB_OUTPUT
-            echo "is-tag-build=false" >> $GITHUB_OUTPUT
-            echo "build-type=validation" >> $GITHUB_OUTPUT
-            echo "✅ Building PR for validation - no release will be created"
           elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
             # Push to main - will create new tag and release
             echo "should-build=true" >> $GITHUB_OUTPUT
@@ -181,82 +172,6 @@ jobs:
           name: frontend-dist-ios-${{ github.sha }}
           path: frontend/dist/
           retention-days: 1
-
-  ios-validation:
-    name: 'iOS Build Validation'
-    runs-on: macos-latest
-    needs: [validate-inputs, comprehensive-checks]
-    if: needs.validate-inputs.outputs.build-type == 'validation'
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-apple-ios, x86_64-apple-ios
-          components: rustfmt, clippy
-
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri
-          key: ios-validation
-
-      - name: Cache Tauri CLI binary
-        uses: actions/cache@v4
-        id: tauri-cli-cache
-        with:
-          path: ~/.cargo/bin/cargo-tauri
-          key: tauri-cli-${{ runner.os }}-v2.0
-
-      - name: Install Tauri CLI
-        if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
-        run: |
-          echo "Installing Tauri CLI..."
-          cargo install tauri-cli --version "^2.0" --locked
-
-      - name: Verify Tauri CLI installation
-        run: |
-          cargo tauri --version
-          echo "Tauri CLI is ready!"
-
-      - name: Install frontend dependencies
-        run: cd frontend && npm ci
-
-      - name: Download frontend build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist-ios-${{ github.sha }}
-          path: frontend/dist/
-
-      - name: iOS init and validation
-        run: |
-          cd src-tauri
-          cargo tauri ios init
-          echo "✅ iOS configuration validated"
-
-      - name: iOS build validation
-        run: |
-          cd src-tauri
-          # Perform a basic iOS build check without full compilation
-          cargo tauri ios build --verbose
-          echo "✅ iOS build validation completed"
-
-      - name: Create validation summary
-        run: |
-          echo "## iOS Build Validation Summary" >> $GITHUB_STEP_SUMMARY
-          echo "✅ iOS build validation: SUCCESS" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Tauri iOS configuration: VALID" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Build dependencies: RESOLVED" >> $GITHUB_STEP_SUMMARY
 
   create-tag:
     name: 'Generate Tag'
