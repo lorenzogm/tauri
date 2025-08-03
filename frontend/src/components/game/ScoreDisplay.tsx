@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from 'react';
 import { cn } from '../../utils';
+import { useTranslation } from '../../context';
 
 interface ScoreDisplayProps extends HTMLAttributes<HTMLDivElement> {
   cw3Points: number;
@@ -18,6 +19,7 @@ export function ScoreDisplay({
   className,
   ...props
 }: ScoreDisplayProps) {
+  const { t } = useTranslation();
   const progressPercentage = target ? Math.min((cw3Points / target) * 100, 100) : 0;
 
   const sizes = {
@@ -58,7 +60,7 @@ export function ScoreDisplay({
       {showProgress && target && (
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-gray-400">
-            <span>Progress to target</span>
+            <span>{t.game.scores.progressToTarget}</span>
             <span>{Math.round(progressPercentage)}%</span>
           </div>
           <div className="w-full bg-crypto-dark-700 rounded-full h-2">
@@ -68,7 +70,7 @@ export function ScoreDisplay({
             />
           </div>
           <div className="text-center text-sm text-gray-400">
-            Target: {target.toLocaleString()} $CW3
+            {t.game.scores.target}: {target.toLocaleString()} $CW3
           </div>
         </div>
       )}

@@ -1,0 +1,20 @@
+{
+  "scores": {
+    "cw3Points": "$CW3 Points",
+    "crympCurrency": "$CRYMP Currency",
+    "progressToTarget": "Progress to target",
+    "target": "Target"
+  },
+  "rounds": {
+    "round": "Round",
+    "scoreProgress": "Score Progress",
+    "complete": "complete",
+    "passed": "PASSED",
+    "bossWarning": "Boss mechanics active - Prepare for enhanced difficulty!",
+    "types": {
+      "SmallBlind": "Small Blind",
+      "BigBlind": "Big Blind",
+      "Boss": "Boss Fight"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "welcome": {
+    "title": "Bienvenido al Inframundo Cripto",
+    "subtitle": "Construye tu mazo, manipula los mercados y evita a los reguladores en esta sátira de la cultura Web3 y las tácticas de la mafia.",
+    "cardSystemTitle": "Sistema de Cartas",
+    "cardSystemDescription": "Cada carta representa un concepto cripto con sabor satírico y valor estratégico.",
+    "scoringSystemTitle": "Sistema de Puntuación",
+    "scoringSystemDescription": "Gana puntos $CW3 para pasar rondas y moneda $CRYMP para comprar nuevas cartas.",
+    "roundProgressionTitle": "Progresión de Rondas",
+    "roundProgressionDescription": "Progresa a través de Ciegas Pequeñas, Ciegas Grandes y desafiantes rondas de Jefes.",
+    "designSystemTitle": "Vista Previa del Sistema de Diseño",
+    "footer": "CryptoMafia - Donde las manos de diamante se encuentran con zapatos de concreto 💎🤝🏴‍☠️"
+  },
+  "actions": {
+    "newGame": "Nuevo Juego",
+    "startNewGame": "Iniciar Nuevo Juego",
+    "loadGame": "Cargar Juego",
+    "settings": "Configuración",
+    "viewCollection": "Ver Colección"
+  }
+}

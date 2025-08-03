@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import type { HTMLAttributes } from 'react';
 import { cn } from '../../utils';
 import type { Card as CardType } from '../../types';
+import { useTranslation } from '../../context';
 
 interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onPlay' | 'onSelect'> {
   card: CardType;
@@ -25,6 +26,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     className,
     ...props
   }, ref) => {
+    const { t } = useTranslation();
     const rarityColors = {
       Common: 'border-gray-400 bg-gray-900',
       Uncommon: 'border-crypto-green-500 bg-crypto-green-900/20',
@@ -41,6 +43,11 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       'Tool': 'text-crypto-green-400',
       'Trap': 'text-crypto-red-400',
       'Event': 'text-blue-400',
+    };
+
+    // Get translated card type
+    const getCardTypeDisplay = (type: keyof typeof cardTypeColors) => {
+      return t.cards.types[type] || type;
     };
 
     const sizes = {
@@ -80,7 +87,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
             </div>
           )}
           <div className={cn('text-xs font-medium', cardTypeColors[card.card_type])}>
-            {card.card_type}
+            {getCardTypeDisplay(card.card_type)}
           </div>
         </div>
 
@@ -107,7 +114,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                   `bg-synergy-${synergy.toLowerCase()}/20 border border-synergy-${synergy.toLowerCase()}`
                 )}
               >
-                {synergy}
+                {t.cards.synergies[synergy] || synergy}
               </span>
             ))}
           </div>

@@ -1,0 +1,20 @@
+{
+  "scores": {
+    "cw3Points": "Puntos $CW3",
+    "crympCurrency": "Moneda $CRYMP",
+    "progressToTarget": "Progreso al objetivo",
+    "target": "Objetivo"
+  },
+  "rounds": {
+    "round": "Ronda",
+    "scoreProgress": "Progreso de Puntuación",
+    "complete": "completado",
+    "passed": "PASADO",
+    "bossWarning": "¡Mecánicas de jefe activas - Prepárate para dificultad mejorada!",
+    "types": {
+      "SmallBlind": "Ciega Pequeña",
+      "BigBlind": "Ciega Grande",
+      "Boss": "Lucha de Jefe"
+    }
+  }
+}

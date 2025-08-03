@@ -1,6 +1,7 @@
 // Common components
 export { Button } from './common/Button';
 export type { ButtonProps } from './common/Button';
+export { LanguageSelector } from './common/LanguageSelector';
 
 // Card components
 export { Card } from './cards/Card';
@@ -12,3 +13,6 @@ export { RoundInfo } from './game/RoundInfo';
 
 // Layout components
 export { Layout, Header, MainContent } from './layout/Layout';
+
+// Screen components
+export { MainScreen } from './screens/MainScreen';

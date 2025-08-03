@@ -1,0 +1,29 @@
+{
+  "types": {
+    "Token": "Token",
+    "Joker": "Comodín",
+    "Tool": "Herramienta", 
+    "Trap": "Trampa",
+    "Event": "Evento"
+  },
+  "rarities": {
+    "Common": "Común",
+    "Uncommon": "Poco Común",
+    "Rare": "Rara",
+    "Epic": "Épica",
+    "Legendary": "Legendaria"
+  },
+  "currencies": {
+    "cw3Gold": "$CW3 Oro",
+    "crympGreen": "$CRYMP Verde"
+  },
+  "synergies": {
+    "Memecoin": "Memecoin",
+    "Scammer": "Estafador",
+    "Influencer": "Influencer",
+    "Trader": "Comerciante",
+    "DAO": "DAO",
+    "DeFi": "DeFi",
+    "NFT": "NFT"
+  }
+}
