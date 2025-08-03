@@ -191,6 +191,24 @@ jobs:
           echo "NDK_HOME=$ANDROID_SDK_ROOT/ndk/26.1.10909125" >> $GITHUB_ENV
           echo "NDK_HOME set to: $ANDROID_SDK_ROOT/ndk/26.1.10909125"
 
+      - name: Verify Android SDK and NDK setup
+        run: |
+          echo "Checking Android SDK setup..."
+          echo "ANDROID_HOME: $ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT: $ANDROID_SDK_ROOT"
+          echo "NDK_HOME: $NDK_HOME"
+          
+          echo "Checking NDK directory..."
+          if [ -d "$NDK_HOME" ]; then
+            echo "✅ NDK directory exists: $NDK_HOME"
+            ls -la "$NDK_HOME"
+          else
+            echo "❌ NDK directory does not exist: $NDK_HOME"
+            echo "Available directories in $ANDROID_SDK_ROOT/ndk/:"
+            ls -la "$ANDROID_SDK_ROOT/ndk/" || echo "NDK parent directory not found"
+            exit 1
+          fi
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
