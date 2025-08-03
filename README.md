@@ -93,17 +93,34 @@ The project includes a comprehensive CI/CD pipeline that ensures code quality an
 
 ## 📱 Android Builds
 
-The project includes an automated CI/CD pipeline that generates Android APK files:
+The project supports building Android APK files with both automated CI/CD and local development options.
 
-### Automatic Builds
+### Automated Builds
 - **Tag releases**: Push a version tag (e.g., `v1.0.0`) to trigger an automatic APK build and GitHub release
 - **Manual builds**: Use GitHub Actions "workflow_dispatch" to manually trigger a build
 
+### Local Android Development
+For local Android development and building:
+
+1. **Quick Setup**: Run the automated setup script:
+   ```bash
+   ./scripts/android-setup.sh
+   ```
+
+2. **Manual Setup**: See [Android Setup Guide](docs/android-setup.md) for detailed instructions
+
+3. **Build APK**:
+   ```bash
+   cd src-tauri
+   tauri android init  # First time only
+   tauri android build --apk --target aarch64
+   ```
+
 ### Build Output
-- APK files are uploaded as GitHub Actions artifacts
-- For tagged releases, APK files are automatically attached to the GitHub release
+- APK files are generated in: `src-tauri/gen/android/app/build/outputs/apk/`
 - Supports ARM64 (aarch64) Android devices
 - Minimum Android SDK: 24 (Android 7.0)
+- For CI builds, APKs are uploaded as artifacts and attached to GitHub releases
 
 ## 🎨 Game Design
 
