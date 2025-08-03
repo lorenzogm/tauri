@@ -313,24 +313,11 @@ jobs:
           workspaces: src-tauri
           key: android-build-${{ matrix.args }}
 
-      - name: Add Android config to Tauri
-        run: |
-          cd src-tauri
-          # Temporarily add Android config for build
-          cp tauri.conf.json tauri.conf.json.backup
-          cat tauri.conf.json.backup | jq '. + {"android": {"minSdkVersion": 24, "compileSdkVersion": 34, "targetSdkVersion": 34}}' > tauri.conf.json
-
       - name: Android init
         run: cd src-tauri && cargo tauri android init
 
       - name: Build Android APK
         run: cd src-tauri && cargo tauri android build --apk ${{ matrix.args }}
-
-      - name: Restore Tauri config
-        if: always()
-        run: |
-          cd src-tauri
-          mv tauri.conf.json.backup tauri.conf.json
 
       - name: Find APK files
         run: find src-tauri/gen -name "*.apk" -type f
