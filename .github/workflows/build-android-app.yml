@@ -9,6 +9,7 @@ on:
         description: 'Select existing tag to build'
         required: true
         type: string
+        default: 'latest'
 
 concurrency:
   group: build-android-app-${{ github.ref }}
@@ -33,14 +34,32 @@ jobs:
         id: check
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            # Workflow dispatch with tag - validate tag exists
+            # Workflow dispatch with tag - validate tag exists or resolve "latest"
             TAG="${{ github.event.inputs.tag }}"
             if [[ -z "$TAG" ]]; then
               echo "❌ Tag input is required for manual builds"
               exit 1
             fi
             
-            # Check if tag exists
+            # Handle "latest" tag by finding the most recent tag or using HEAD
+            if [[ "$TAG" == "latest" ]]; then
+              # Try to get the latest tag, fallback to HEAD if no tags exist
+              LATEST_TAG=$(git tag -l --sort=-version:refname | head -n1)
+              if [[ -n "$LATEST_TAG" ]]; then
+                TAG="$LATEST_TAG"
+                echo "✅ Resolved 'latest' to tag: $TAG"
+              else
+                # No tags exist, use current commit
+                TAG="main"
+                echo "✅ No tags found, using 'main' branch (latest commit)"
+                echo "should-build=true" >> $GITHUB_OUTPUT
+                echo "build-tag=" >> $GITHUB_OUTPUT
+                echo "is-tag-build=false" >> $GITHUB_OUTPUT
+                exit 0
+              fi
+            fi
+            
+            # Check if resolved tag exists
             if git tag -l | grep -q "^${TAG}$"; then
               echo "should-build=true" >> $GITHUB_OUTPUT
               echo "build-tag=${TAG}" >> $GITHUB_OUTPUT
