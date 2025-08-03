@@ -218,6 +218,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ needs.validate-inputs.outputs.build-tag || needs.create-tag.outputs.new-tag || github.ref }}
+          fetch-depth: 0
 
       - name: Determine version and tag
         id: version
