@@ -157,7 +157,6 @@ jobs:
   android-check:
     name: 'Android APK Build'
     runs-on: ubuntu-latest
-    needs: [frontend]
     if: github.event_name == 'pull_request'
     permissions:
       contents: read
@@ -191,24 +190,6 @@ jobs:
           echo "NDK_HOME=$ANDROID_SDK_ROOT/ndk/26.3.11579264" >> $GITHUB_ENV
           echo "NDK_HOME set to: $ANDROID_SDK_ROOT/ndk/26.3.11579264"
 
-      - name: Verify Android SDK and NDK setup
-        run: |
-          echo "Checking Android SDK setup..."
-          echo "ANDROID_HOME: $ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT: $ANDROID_SDK_ROOT"
-          echo "NDK_HOME: $NDK_HOME"
-          
-          echo "Checking NDK directory..."
-          if [ -d "$NDK_HOME" ]; then
-            echo "✅ NDK directory exists: $NDK_HOME"
-            ls -la "$NDK_HOME"
-          else
-            echo "❌ NDK directory does not exist: $NDK_HOME"
-            echo "Available directories in $ANDROID_SDK_ROOT/ndk/:"
-            ls -la "$ANDROID_SDK_ROOT/ndk/" || echo "NDK parent directory not found"
-            exit 1
-          fi
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -234,42 +215,8 @@ jobs:
         if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
         run: cargo install tauri-cli --version "^2.0" --locked
 
-      - name: Verify Tauri CLI installation
-        run: |
-          cargo tauri --version
-          echo "Tauri CLI is ready!"
-
       - name: Install frontend dependencies
         run: cd frontend && npm ci
-
-      - name: Download frontend artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist/
-
-      - name: Verify frontend build
-        run: |
-          echo "Checking frontend dist directory..."
-          ls -la frontend/dist/ || echo "Frontend dist directory not found"
-          if [ ! -f "frontend/dist/index.html" ]; then
-            echo "❌ Frontend build artifacts missing - index.html not found"
-            exit 1
-          else
-            echo "✅ Frontend build artifacts verified"
-          fi
-
-      - name: Prepare Tauri config for build
-        run: |
-          cd src-tauri
-          # Backup original config
-          cp tauri.conf.json tauri.conf.json.backup
-          # Replace beforeBuildCommand with empty string using sed
-          sed -i 's|"beforeBuildCommand": "cd ../frontend && npm run build"|"beforeBuildCommand": ""|g' tauri.conf.json
-          echo "Updated Tauri config to skip frontend build:"
-          cat tauri.conf.json
-          echo "Verifying no beforeBuildCommand exists:"
-          grep -n "beforeBuildCommand" tauri.conf.json || echo "No beforeBuildCommand found"
 
       - name: Android init
         run: cd src-tauri && cargo tauri android init
