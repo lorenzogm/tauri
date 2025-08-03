@@ -264,11 +264,12 @@ jobs:
           cd src-tauri
           # Backup original config
           cp tauri.conf.json tauri.conf.json.backup
-          # Remove beforeBuildCommand since we already have the built frontend
-          jq '.build.beforeBuildCommand = ""' tauri.conf.json > tauri.conf.json.tmp
-          mv tauri.conf.json.tmp tauri.conf.json
+          # Replace beforeBuildCommand with empty string using sed
+          sed -i 's|"beforeBuildCommand": "cd ../frontend && npm run build"|"beforeBuildCommand": ""|g' tauri.conf.json
           echo "Updated Tauri config to skip frontend build:"
           cat tauri.conf.json
+          echo "Verifying no beforeBuildCommand exists:"
+          grep -n "beforeBuildCommand" tauri.conf.json || echo "No beforeBuildCommand found"
 
       - name: Android init
         run: cd src-tauri && cargo tauri android init
