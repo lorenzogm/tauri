@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from 'react';
 import { cn } from '../../utils';
 import type { RoundType } from '../../types';
+import { useTranslation } from '../../context';
 
 interface RoundInfoProps extends HTMLAttributes<HTMLDivElement> {
   roundNumber: number;
@@ -17,21 +18,23 @@ export function RoundInfo({
   className,
   ...props
 }: RoundInfoProps) {
+  const { t } = useTranslation();
+  
   const roundTypeConfig = {
     'SmallBlind': {
-      label: 'Small Blind',
+      label: t.game.rounds.types.SmallBlind,
       color: 'text-crypto-green-400',
       bgColor: 'bg-crypto-green-900/20',
       borderColor: 'border-crypto-green-500',
     },
     'BigBlind': {
-      label: 'Big Blind',
+      label: t.game.rounds.types.BigBlind,
       color: 'text-yellow-400',
       bgColor: 'bg-yellow-900/20', 
       borderColor: 'border-yellow-500',
     },
     'Boss': {
-      label: 'Boss Fight',
+      label: t.game.rounds.types.Boss,
       color: 'text-crypto-red-400',
       bgColor: 'bg-crypto-red-900/20',
       borderColor: 'border-crypto-red-500',
@@ -56,7 +59,7 @@ export function RoundInfo({
       <div className="flex justify-between items-center mb-3">
         <div>
           <h3 className="text-lg font-bold text-white">
-            Round {roundNumber}
+            {t.game.rounds.round} {roundNumber}
           </h3>
           <div className={cn('text-sm font-medium', config.color)}>
             {config.label}
@@ -75,7 +78,7 @@ export function RoundInfo({
       {/* Progress Bar */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-400">Score Progress</span>
+          <span className="text-gray-400">{t.game.rounds.scoreProgress}</span>
           <span className={cn(
             'font-bold',
             isPassed ? 'text-crypto-green-400' : 'text-gray-300'
@@ -97,9 +100,9 @@ export function RoundInfo({
         </div>
         
         <div className="flex justify-between text-xs text-gray-400">
-          <span>{Math.round(progress)}% complete</span>
+          <span>{Math.round(progress)}% {t.game.rounds.complete}</span>
           {isPassed && (
-            <span className="text-crypto-green-400 font-bold">✓ PASSED</span>
+            <span className="text-crypto-green-400 font-bold">✓ {t.game.rounds.passed}</span>
           )}
         </div>
       </div>
@@ -107,7 +110,7 @@ export function RoundInfo({
       {/* Boss Warning */}
       {roundType === 'Boss' && (
         <div className="mt-3 p-2 bg-crypto-red-900/30 border border-crypto-red-600 rounded text-crypto-red-300 text-xs">
-          ⚠️ Boss mechanics active - Prepare for enhanced difficulty!
+          ⚠️ {t.game.rounds.bossWarning}
         </div>
       )}
     </div>

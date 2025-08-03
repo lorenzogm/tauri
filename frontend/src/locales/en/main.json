@@ -1,0 +1,21 @@
+{
+  "welcome": {
+    "title": "Welcome to the Crypto Underworld",
+    "subtitle": "Build your deck, manipulate the markets, and avoid the regulators in this satirical take on Web3 culture and mafia tactics.",
+    "cardSystemTitle": "Card System",
+    "cardSystemDescription": "Each card represents a crypto concept with satirical flavor and strategic value.",
+    "scoringSystemTitle": "Scoring System",
+    "scoringSystemDescription": "Earn $CW3 points to pass rounds and $CRYMP currency to buy new cards.",
+    "roundProgressionTitle": "Round Progression",
+    "roundProgressionDescription": "Progress through Small Blinds, Big Blinds, and challenging Boss rounds.",
+    "designSystemTitle": "Design System Preview",
+    "footer": "CryptoMafia - Where diamond hands meet concrete shoes 💎🤝🏴‍☠️"
+  },
+  "actions": {
+    "newGame": "New Game",
+    "startNewGame": "Start New Game",
+    "loadGame": "Load Game",
+    "settings": "Settings",
+    "viewCollection": "View Collection"
+  }
+}
