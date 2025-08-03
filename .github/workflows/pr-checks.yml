@@ -259,6 +259,17 @@ jobs:
             echo "✅ Frontend build artifacts verified"
           fi
 
+      - name: Prepare Tauri config for build
+        run: |
+          cd src-tauri
+          # Backup original config
+          cp tauri.conf.json tauri.conf.json.backup
+          # Remove beforeBuildCommand since we already have the built frontend
+          jq '.build.beforeBuildCommand = ""' tauri.conf.json > tauri.conf.json.tmp
+          mv tauri.conf.json.tmp tauri.conf.json
+          echo "Updated Tauri config to skip frontend build:"
+          cat tauri.conf.json
+
       - name: Android init
         run: cd src-tauri && cargo tauri android init
 
