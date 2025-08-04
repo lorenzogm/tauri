@@ -291,14 +291,20 @@ jobs:
       - name: Setup system dependencies with caching
         uses: ./.github/actions/setup-system-deps
 
-      - name: Install Tauri CLI via npm (faster and more reliable)
-        run: |
-          echo "Installing Tauri CLI via npm..."
-          npm install -g @tauri-apps/cli@latest
+      - name: Cache Tauri CLI binary
+        uses: actions/cache@v4
+        id: tauri-cli-cache
+        with:
+          path: ~/.cargo/bin/cargo-tauri
+          key: tauri-cli-${{ runner.os }}-v2.0
+
+      - name: Install Tauri CLI
+        if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
+        run: cargo install tauri-cli --version "^2.0" --locked
 
       - name: Verify Tauri CLI installation
         run: |
-          tauri --version
+          cargo tauri --version
           echo "Tauri CLI is ready!"
 
       - name: Install frontend dependencies
@@ -328,7 +334,7 @@ jobs:
             echo "❌ NDK directory not found at expected location"
             ls -la "$ANDROID_SDK_ROOT/ndk/" || echo "NDK base directory not found"
           fi
-          tauri android init --skip-targets-install
+          cargo tauri android init --skip-targets-install
 
       - name: Setup Android Keystore for Signing
         run: |
@@ -367,7 +373,7 @@ jobs:
           fi
 
       - name: Build Android APK
-        run: cd src-tauri && tauri android build --apk ${{ matrix.args }}
+        run: cd src-tauri && cargo tauri android build --apk ${{ matrix.args }}
 
       - name: Find APK files
         run: find src-tauri/gen -name "*.apk" -type f
