@@ -363,6 +363,10 @@ jobs:
             echo "⚠️ Using temporary development keystore - not suitable for production distribution"
           fi
           
+          # Set Android signing environment variables
+          echo "TAURI_ANDROID_KEYSTORE_PATH=/tmp/keystore/cryptomafia-release.keystore" >> $GITHUB_ENV
+          echo "TAURI_ANDROID_KEY_ALIAS=release-key" >> $GITHUB_ENV
+          
           # Verify keystore exists
           if [ -f "/tmp/keystore/cryptomafia-release.keystore" ]; then
             echo "✅ Keystore ready for signing"
@@ -373,6 +377,9 @@ jobs:
           fi
 
       - name: Build Android APK
+        env:
+          TAURI_ANDROID_KEYSTORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
+          TAURI_ANDROID_KEY_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
         run: cd src-tauri && cargo tauri android build --apk ${{ matrix.args }}
 
       - name: Find APK files
