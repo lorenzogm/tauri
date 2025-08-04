@@ -95,6 +95,29 @@ The project includes a comprehensive CI/CD pipeline that ensures code quality an
 
 The project supports building Android APK files with both automated CI/CD and local development options.
 
+### ⚠️ APK Validity Fix
+
+**Problem**: "sigue diciendo que el paquete no es valido" (package not valid error)
+**Solution**: Proper Android signing configuration implemented
+
+#### Quick Fix
+```bash
+# Generate signing keystore
+./scripts/generate-keystore.sh --development
+
+# Set environment variables
+export TAURI_ANDROID_KEYSTORE_PATH=".android/cryptomafia-release.keystore"
+export TAURI_ANDROID_KEYSTORE_PASSWORD="cryptomafia123"
+export TAURI_ANDROID_KEY_PASSWORD="cryptomafia123"
+
+# Initialize and build signed APK
+cd src-tauri
+tauri android init
+tauri android build --apk --target aarch64
+```
+
+**📚 See [APK Validity Troubleshooting Guide](docs/fixing-apk-validity.md) for complete solution details.**
+
 ### Automated Builds
 - **Tag releases**: Push a version tag (e.g., `v1.0.0`) to trigger an automatic APK build and GitHub release
 - **Manual builds**: Use GitHub Actions "workflow_dispatch" to manually trigger a build
@@ -107,7 +130,12 @@ For local Android development and building:
    ./scripts/android-setup.sh
    ```
 
-2. **Manual Setup**: See [Android Setup Guide](docs/android-setup.md) for detailed instructions
+2. **Test APK Installation**: Simulate the complete process:
+   ```bash
+   ./scripts/simulate-apk-installation.sh
+   ```
+
+3. **Manual Setup**: See [Android Setup Guide](docs/android-setup.md) for detailed instructions
 
 3. **Build APK**:
    ```bash
