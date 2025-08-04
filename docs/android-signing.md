@@ -66,9 +66,9 @@ The signing configuration is defined in `src-tauri/tauri.conf.json`:
   "android": {
     "releaseSigningConfig": {
       "keyAlias": "release-key",
-      "keyPassword": "ENV:KEYSTORE_PASSWORD",
-      "storeFile": "/tmp/keystore/cryptomafia-release.keystore",
-      "storePassword": "ENV:KEYSTORE_PASSWORD"
+      "keyPassword": "ENV:TAURI_ANDROID_KEY_PASSWORD",
+      "storeFile": "ENV:TAURI_ANDROID_KEYSTORE_PATH",
+      "storePassword": "ENV:TAURI_ANDROID_KEYSTORE_PASSWORD"
     }
   }
 }
@@ -83,7 +83,18 @@ The build workflow (`build-android-app.yml`) handles signing automatically:
 
 ### Environment Variables
 
-- `KEYSTORE_PASSWORD`: Password for the keystore (from secrets or development default)
+For the signing configuration to work, these environment variables must be set:
+
+- `TAURI_ANDROID_KEYSTORE_PATH`: Path to the keystore file
+- `TAURI_ANDROID_KEYSTORE_PASSWORD`: Password for the keystore
+- `TAURI_ANDROID_KEY_PASSWORD`: Password for the specific key (usually same as keystore password)
+
+For local development:
+```bash
+export TAURI_ANDROID_KEYSTORE_PATH=".android/cryptomafia-release.keystore"
+export TAURI_ANDROID_KEYSTORE_PASSWORD="cryptomafia123"
+export TAURI_ANDROID_KEY_PASSWORD="cryptomafia123"
+```
 
 ## Security Best Practices
 
@@ -129,7 +140,12 @@ If signing fails in GitHub Actions:
 To test the complete signing flow:
 
 1. Generate keystore: `./scripts/generate-keystore.sh --development`
-2. Set password: `export KEYSTORE_PASSWORD="cryptomafia123"`
+2. Set environment variables:
+   ```bash
+   export TAURI_ANDROID_KEYSTORE_PATH=".android/cryptomafia-release.keystore"
+   export TAURI_ANDROID_KEYSTORE_PASSWORD="cryptomafia123"
+   export TAURI_ANDROID_KEY_PASSWORD="cryptomafia123"
+   ```
 3. Build APK: `cd src-tauri && tauri android build --apk --target aarch64`
 4. Verify signing: `./scripts/test-apk-signing.sh`
 
