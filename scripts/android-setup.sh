@@ -30,6 +30,12 @@ if [ "$JAVA_VERSION" != "17" ]; then
     echo "⚠️  Java version $JAVA_VERSION found, but Java 17 is recommended"
 fi
 
+# Check for keytool
+if ! command -v keytool &> /dev/null; then
+    echo "❌ keytool not found. This comes with Java JDK."
+    exit 1
+fi
+
 # Check Rust
 if ! command -v rustc &> /dev/null; then
     echo "❌ Rust not found. Please install Rust: https://rustup.rs/"
@@ -73,6 +79,29 @@ else
     fi
 fi
 
+# Setup signing keystore
+echo "🔐 Setting up Android signing keystore..."
+if [ ! -f ".android/cryptomafia-release.keystore" ]; then
+    echo "📦 Generating development keystore for APK signing..."
+    ./scripts/generate-keystore.sh --development
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ Development keystore generated"
+        echo "🔒 Password set to development default"
+        export KEYSTORE_PASSWORD="cryptomafia123"
+    else
+        echo "❌ Failed to generate keystore"
+        exit 1
+    fi
+else
+    echo "✅ Keystore already exists"
+    if [ -z "$KEYSTORE_PASSWORD" ]; then
+        echo "🔧 Please set KEYSTORE_PASSWORD environment variable"
+        echo "   For development builds: export KEYSTORE_PASSWORD='cryptomafia123'"
+        exit 1
+    fi
+fi
+
 # Build frontend
 echo "🔨 Building frontend..."
 cd frontend
@@ -106,7 +135,13 @@ cd ..
 echo ""
 echo "🎉 Setup complete!"
 echo ""
-echo "To build the Android APK:"
+echo "🔐 Signing Configuration:"
+echo "   Keystore: .android/cryptomafia-release.keystore"
+echo "   Environment: KEYSTORE_PASSWORD='$KEYSTORE_PASSWORD'"
+echo ""
+echo "To build a signed Android APK:"
 echo "   cd src-tauri && tauri android build --apk --target aarch64"
 echo ""
-echo "The APK will be generated in: src-tauri/gen/android/app/build/outputs/apk/"
+echo "The signed APK will be generated in: src-tauri/gen/android/app/build/outputs/apk/"
+echo ""
+echo "🔒 Note: Keep your keystore file secure and never commit it to version control!"
