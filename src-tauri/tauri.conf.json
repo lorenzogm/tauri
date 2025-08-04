@@ -32,20 +32,7 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ],
-    "android": {
-      "minSdkVersion": 24,
-      "compileSdkVersion": 34,
-      "targetSdkVersion": 34,
-      "aaptOptions": {
-        "additionalParameters": ["--package-name", "com.cryptomafia.app"]
-      },
-      "packageName": "com.cryptomafia.app",
-      "permissions": [
-        "android.permission.INTERNET",
-        "android.permission.VIBRATE"
-      ]
-    }
+    ]
   },
   "plugins": {}
 }
