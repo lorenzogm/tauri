@@ -380,7 +380,12 @@ jobs:
         env:
           TAURI_ANDROID_KEYSTORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
           TAURI_ANDROID_KEY_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
-        run: cd src-tauri && cargo tauri android build --apk ${{ matrix.args }}
+        run: |
+          echo "🔍 Android signing environment check:"
+          echo "TAURI_ANDROID_KEYSTORE_PATH: $TAURI_ANDROID_KEYSTORE_PATH"
+          echo "TAURI_ANDROID_KEY_ALIAS: $TAURI_ANDROID_KEY_ALIAS"
+          echo "Keystore file exists: $(test -f "$TAURI_ANDROID_KEYSTORE_PATH" && echo "✅ YES" || echo "❌ NO")"
+          cd src-tauri && cargo tauri android build --apk ${{ matrix.args }}
 
       - name: Find APK files
         run: find src-tauri/gen -name "*.apk" -type f
