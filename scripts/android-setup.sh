@@ -87,17 +87,22 @@ if [ ! -f ".android/cryptomafia-release.keystore" ]; then
     
     if [ $? -eq 0 ]; then
         echo "✅ Development keystore generated"
-        echo "🔒 Password set to development default"
-        export KEYSTORE_PASSWORD="cryptomafia123"
+        echo "🔒 Setting up environment variables for development"
+        export TAURI_ANDROID_KEYSTORE_PATH=".android/cryptomafia-release.keystore"
+        export TAURI_ANDROID_KEYSTORE_PASSWORD="cryptomafia123"
+        export TAURI_ANDROID_KEY_PASSWORD="cryptomafia123"
     else
         echo "❌ Failed to generate keystore"
         exit 1
     fi
 else
     echo "✅ Keystore already exists"
-    if [ -z "$KEYSTORE_PASSWORD" ]; then
-        echo "🔧 Please set KEYSTORE_PASSWORD environment variable"
-        echo "   For development builds: export KEYSTORE_PASSWORD='cryptomafia123'"
+    if [ -z "$TAURI_ANDROID_KEYSTORE_PASSWORD" ]; then
+        echo "🔧 Please set TAURI_ANDROID_KEYSTORE_PASSWORD environment variable"
+        echo "   For development builds:"
+        echo "   export TAURI_ANDROID_KEYSTORE_PATH='.android/cryptomafia-release.keystore'"
+        echo "   export TAURI_ANDROID_KEYSTORE_PASSWORD='cryptomafia123'"
+        echo "   export TAURI_ANDROID_KEY_PASSWORD='cryptomafia123'"
         exit 1
     fi
 fi
@@ -137,7 +142,10 @@ echo "🎉 Setup complete!"
 echo ""
 echo "🔐 Signing Configuration:"
 echo "   Keystore: .android/cryptomafia-release.keystore"
-echo "   Environment: KEYSTORE_PASSWORD='$KEYSTORE_PASSWORD'"
+echo "   Environment variables set:"
+echo "     TAURI_ANDROID_KEYSTORE_PATH='$TAURI_ANDROID_KEYSTORE_PATH'"
+echo "     TAURI_ANDROID_KEYSTORE_PASSWORD='$TAURI_ANDROID_KEYSTORE_PASSWORD'"
+echo "     TAURI_ANDROID_KEY_PASSWORD='$TAURI_ANDROID_KEY_PASSWORD'"
 echo ""
 echo "To build a signed Android APK:"
 echo "   cd src-tauri && tauri android build --apk --target aarch64"

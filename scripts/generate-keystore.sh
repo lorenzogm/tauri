@@ -74,7 +74,9 @@ if [ $? -eq 0 ]; then
     echo "   - For production builds, use a strong password"
     echo ""
     echo "🚀 Usage:"
-    echo "   Export KEYSTORE_PASSWORD='$KEYSTORE_PASSWORD'"
+    echo "   export TAURI_ANDROID_KEYSTORE_PATH='.android/cryptomafia-release.keystore'"
+    echo "   export TAURI_ANDROID_KEYSTORE_PASSWORD='$KEYSTORE_PASSWORD'"
+    echo "   export TAURI_ANDROID_KEY_PASSWORD='$KEYSTORE_PASSWORD'"
     echo "   cd src-tauri && tauri android build --apk --target aarch64"
 else
     echo "❌ Failed to generate keystore"
