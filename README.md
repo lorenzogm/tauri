@@ -151,7 +151,9 @@ This project follows a structured development approach with each feature impleme
 
 ## 📄 License
 
-[License information to be added]
+This project is proprietary software with all rights reserved. See the [LICENSE](LICENSE) file for complete terms and restrictions. 
+
+**No sharing, no reuse, no copying permitted.**
 
 ---
 
