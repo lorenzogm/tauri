@@ -88,8 +88,20 @@ The project includes a comprehensive CI/CD pipeline that ensures code quality an
 - **PR Checks**: All pull requests are validated for quality and buildability
 - **Main Branch Builds**: Comprehensive weekly builds with security audits
 - **Android Releases**: Automated APK generation for tagged releases
+- **GitHub Pages Deployment**: Automatic deployment of the web frontend to GitHub Pages
 
 📚 **See [CI/CD Documentation](docs/CI-CD.md) for complete details on the pipeline and quality standards.**
+
+## 🌐 Web Deployment
+
+The frontend React application is automatically deployed to GitHub Pages when changes are pushed to the main branch.
+
+**Live Demo**: https://lorenzogm.github.io/tauri/
+
+The deployment workflow:
+1. Builds the React frontend with proper GitHub Pages configuration
+2. Deploys static files to GitHub Pages
+3. Available at the URL above for testing and demonstration
 
 ## 📱 Android Builds
 
